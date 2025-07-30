@@ -1,0 +1,391 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    color: #e0e6ed;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Efeito de raios de fundo */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(120, 219, 226, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(120, 219, 226, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(120, 219, 226, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
+    border: 1px solid rgba(120, 219, 226, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.tesla-avatar {
+    flex-shrink: 0;
+}
+
+.tesla-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #78dbe2;
+    box-shadow: 0 0 20px rgba(120, 219, 226, 0.5);
+    transition: all 0.3s ease;
+}
+
+.tesla-avatar img:hover {
+    box-shadow: 0 0 30px rgba(120, 219, 226, 0.8);
+    transform: scale(1.05);
+}
+
+.header-info {
+    flex-grow: 1;
+}
+
+.header-info h1 {
+    font-size: 2.5em;
+    color: #78dbe2;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(120, 219, 226, 0.5);
+}
+
+.subtitle {
+    color: #b8c6db;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.status {
+    color: #78dbe2;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+.voice-btn, .clear-btn, .language-btn {
+    background: rgba(120, 219, 226, 0.1);
+    border: 1px solid rgba(120, 219, 226, 0.3);
+    border-radius: 10px;
+    padding: 12px;
+    color: #78dbe2;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.voice-btn:hover, .clear-btn:hover, .language-btn:hover {
+    background: rgba(120, 219, 226, 0.2);
+    box-shadow: 0 0 15px rgba(120, 219, 226, 0.3);
+    transform: translateY(-2px);
+}
+
+.voice-btn.active, .language-btn.active {
+    background: rgba(120, 219, 226, 0.3);
+    box-shadow: 0 0 20px rgba(120, 219, 226, 0.4);
+}
+
+.language-btn {
+    min-width: 80px;
+    justify-content: center;
+}
+
+#language-text {
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.chat-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(26, 26, 46, 0.6);
+    border: 1px solid rgba(120, 219, 226, 0.2);
+    border-radius: 15px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 60vh;
+    scroll-behavior: smooth;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: rgba(120, 219, 226, 0.1);
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(120, 219, 226, 0.3);
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 219, 226, 0.5);
+}
+
+.message {
+    margin-bottom: 20px;
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-content {
+    padding: 15px 20px;
+    border-radius: 15px;
+    position: relative;
+    line-height: 1.6;
+    font-size: 1.05em;
+}
+
+.user-message .message-content {
+    background: linear-gradient(135deg, rgba(120, 219, 226, 0.2), rgba(120, 219, 226, 0.1));
+    border: 1px solid rgba(120, 219, 226, 0.3);
+    margin-left: 60px;
+    border-bottom-right-radius: 5px;
+}
+
+.tesla-message .message-content {
+    background: linear-gradient(135deg, rgba(22, 33, 62, 0.8), rgba(26, 26, 46, 0.8));
+    border: 1px solid rgba(120, 219, 226, 0.4);
+    margin-right: 60px;
+    border-bottom-left-radius: 5px;
+    box-shadow: 0 4px 15px rgba(120, 219, 226, 0.1);
+}
+
+.message-time {
+    font-size: 0.8em;
+    color: rgba(184, 198, 219, 0.6);
+    margin-top: 5px;
+    text-align: right;
+}
+
+.tesla-message .message-time {
+    text-align: left;
+}
+
+.chat-input-container {
+    border-top: 1px solid rgba(120, 219, 226, 0.2);
+    padding: 20px;
+    background: rgba(15, 15, 35, 0.8);
+}
+
+.input-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+#user-input {
+    flex-grow: 1;
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(120, 219, 226, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    color: #e0e6ed;
+    font-size: 1em;
+    resize: none;
+    min-height: 50px;
+    max-height: 120px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+#user-input:focus {
+    outline: none;
+    border-color: #78dbe2;
+    box-shadow: 0 0 15px rgba(120, 219, 226, 0.3);
+    background: rgba(26, 26, 46, 0.9);
+}
+
+#user-input::placeholder {
+    color: rgba(184, 198, 219, 0.5);
+}
+
+.send-btn {
+    background: linear-gradient(135deg, #78dbe2, #5bb3c7);
+    border: none;
+    border-radius: 12px;
+    padding: 15px 20px;
+    color: #0f0f23;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(120, 219, 226, 0.3);
+}
+
+.send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(120, 219, 226, 0.4);
+}
+
+.send-btn:active {
+    transform: translateY(0);
+}
+
+.send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.input-hint {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.input-hint small {
+    color: rgba(184, 198, 219, 0.5);
+    font-size: 0.85em;
+}
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 15, 35, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.loading.show {
+    display: flex;
+}
+
+.lightning-bolt {
+    font-size: 4em;
+    animation: electric 1.5s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes electric {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+        filter: drop-shadow(0 0 10px #78dbe2);
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+        filter: drop-shadow(0 0 20px #78dbe2);
+    }
+}
+
+.loading p {
+    font-size: 1.2em;
+    color: #78dbe2;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .header-info h1 {
+        font-size: 2em;
+    }
+    
+    .controls {
+        justify-content: center;
+    }
+    
+    .user-message .message-content {
+        margin-left: 20px;
+    }
+    
+    .tesla-message .message-content {
+        margin-right: 20px;
+    }
+    
+    .chat-messages {
+        max-height: 50vh;
+    }
+}
+
+/* Animação para quando Tesla está "falando" */
+.tesla-speaking {
+    animation: speaking 2s ease-in-out infinite;
+}
+
+@keyframes speaking {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(120, 219, 226, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(120, 219, 226, 0.8);
+    }
+}

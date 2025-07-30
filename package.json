@@ -1,0 +1,24 @@
+{
+  "name": "tesla-digital-chat",
+  "version": "1.0.0",
+  "description": "Chat interativo com a persona de Nikola Tesla usando IA Gemini e síntese de voz",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=3000 --open=/index.html",
+    "start": "live-server --port=3000 --open=/index.html",
+    "install-server": "npm install -g live-server"
+  },
+  "keywords": [
+    "tesla",
+    "chat",
+    "ai",
+    "gemini",
+    "voice-synthesis",
+    "javascript"
+  ],
+  "author": "Tesla Digital Project",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

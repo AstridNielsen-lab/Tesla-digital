@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat com Nikola Tesla - O Inventor Visionário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="tesla-avatar">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/79/Tesla_circa_1890.jpeg" alt="Nikola Tesla" id="tesla-image">
+            </div>
+            <div class="header-info">
+                <h1>Nikola Tesla</h1>
+                <p class="subtitle">Inventor Sérvio • Visionário da Eletricidade • 1856-1943</p>
+                <p class="status" id="status">Pronto para conversar sobre ciência e invenções</p>
+            </div>
+            <div class="controls">
+                <button id="language-toggle" class="language-btn" title="Alternar idioma (Português/Sérvio)">
+                    <span id="language-flag">🇧🇷</span>
+                    <span id="language-text">PT</span>
+                </button>
+                <button id="voice-toggle" class="voice-btn" title="Ativar/Desativar Voz">
+                    <span id="voice-icon">🔊</span>
+                </button>
+                <button id="clear-chat" class="clear-btn" title="Limpar Conversa">
+                    <span>🗑️</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message tesla-message">
+                    <div class="message-content">
+                        <p>Saudações! Eu sou Nikola Tesla, inventor e visionário. Nasci na Sérvia em 1856 e dediquei minha vida ao progresso da humanidade através da ciência e da tecnologia. Posso falar sobre minhas invenções, teorias sobre eletricidade, energia sem fio, e minhas visões para o futuro da humanidade. Como posso ajudá-lo hoje?</p>
+                    </div>
+                    <div class="message-time">Agora</div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="user-input" 
+                        placeholder="Faça uma pergunta ao grande inventor Tesla..."
+                        rows="1"
+                    ></textarea>
+                    <button id="send-btn" class="send-btn">
+                        <span id="send-icon">⚡</span>
+                    </button>
+                </div>
+                <div class="input-hint">
+                    <small>Pressione Enter para enviar ou Shift+Enter para nova linha</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="lightning-bolt">⚡</div>
+        <p>Tesla está pensando...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
