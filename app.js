@@ -19,7 +19,7 @@ const teslaImage = document.getElementById('tesla-image');
 // Estado da aplicação
 let isVoiceEnabled = true;
 let isTyping = false;
-let currentLanguage = 'pt'; // 'pt' para português, 'sr' para sérvio
+let currentLanguage = 'sr'; // 'sr' para sérvio (padrão), 'pt' para português
 let conversationHistory = [];
 
 // Configurações de idioma
@@ -140,7 +140,7 @@ function initializeApp() {
     updateVoiceButton();
     updateLanguageButton();
     updateInterface();
-    updateStatus('Pronto para conversar sobre ciência e invenções');
+    updateStatus('Спреман за разговор о науци и проналасцима');
 }
 
 function handleKeyPress(event) {
