@@ -135,12 +135,74 @@ function initializeApp() {
         isVoiceEnabled = false;
         voiceToggle.style.display = 'none';
         console.warn('Síntese de voz não suportada neste navegador');
+    } else {
+        // Aguardar carregamento das vozes e diagnosticar
+        setTimeout(() => {
+            diagnoseVoices();
+        }, 1000);
     }
     
     updateVoiceButton();
     updateLanguageButton();
     updateInterface();
     updateStatus('Спреман за разговор о науци и проналасцима');
+}
+
+// Função para diagnosticar vozes disponíveis
+function diagnoseVoices() {
+    const voices = window.speechSynthesis.getVoices();
+    console.log('=== DIAGNÓSTICO DE VOZES ===');
+    console.log('Total de vozes:', voices.length);
+    
+    // Agrupar por idioma
+    const voicesByLang = {};
+    voices.forEach(voice => {
+        const lang = voice.lang.toLowerCase();
+        if (!voicesByLang[lang]) {
+            voicesByLang[lang] = [];
+        }
+        voicesByLang[lang].push(voice.name);
+    });
+    
+    console.log('Vozes por idioma:', voicesByLang);
+    
+    // Verificar especificamente para sérvio e idiomas eslavos
+    const slavicLanguages = ['sr', 'hr', 'bs', 'mk', 'bg', 'sl', 'ru', 'cs', 'sk', 'pl'];
+    const foundSlavic = slavicLanguages.filter(lang => 
+        voices.some(voice => voice.lang.toLowerCase().includes(lang))
+    );
+    
+    console.log('Idiomas eslavos encontrados:', foundSlavic);
+    
+    if (foundSlavic.length === 0) {
+        console.warn('⚠️ Nenhuma voz eslava encontrada. Tesla usará fallback para inglês.');
+    } else {
+        console.log('✅ Vozes eslavas disponíveis para Tesla!');
+    }
+    
+    // Testar síntese de voz com uma frase curta
+    testVoiceSynthesis();
+}
+
+// Função para testar síntese de voz
+function testVoiceSynthesis() {
+    console.log('Testando síntese de voz...');
+    
+    const testText = currentLanguage === 'sr' ? 'Тест' : 'Teste';
+    const utterance = new SpeechSynthesisUtterance(testText);
+    utterance.volume = 0.1; // Volume baixo para não incomodar
+    utterance.rate = 2; // Rápido para não demorar
+    
+    utterance.onstart = () => {
+        console.log('✅ Síntese de voz funcionando!');
+    };
+    
+    utterance.onerror = (event) => {
+        console.error('❌ Erro na síntese de voz:', event.error);
+    };
+    
+    // Executar teste silencioso
+    window.speechSynthesis.speak(utterance);
 }
 
 function handleKeyPress(event) {
@@ -305,54 +367,123 @@ function speakText(text) {
     // Cancelar qualquer fala anterior
     window.speechSynthesis.cancel();
     
-    // Criar utterance
-    const utterance = new SpeechSynthesisUtterance(text);
-    
-    // Configurar voz baseada no idioma atual
-    const langConfig = LANGUAGES[currentLanguage];
-    utterance.lang = langConfig.code;
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    utterance.volume = 0.8;
-    
-    // Tentar encontrar uma voz apropriada para o idioma
-    const voices = window.speechSynthesis.getVoices();
-    let targetVoice;
-    
-    if (currentLanguage === 'pt') {
-        targetVoice = voices.find(voice => 
-            voice.lang.includes('pt') && voice.name.toLowerCase().includes('male')
-        ) || voices.find(voice => voice.lang.includes('pt'));
-    } else if (currentLanguage === 'sr') {
-        // Para sérvio, tentar encontrar vozes sérvias ou similares (croata, bósnio)
-        targetVoice = voices.find(voice => 
-            voice.lang.includes('sr') || voice.lang.includes('hr') || voice.lang.includes('bs')
-        ) || voices.find(voice => voice.lang.includes('en')); // Fallback para inglês
-    }
-    
-    if (targetVoice) {
-        utterance.voice = targetVoice;
-    }
-    
-    // Callbacks
-    utterance.onstart = () => {
-        teslaImage.classList.add('tesla-speaking');
-        updateStatus(currentLanguage === 'pt' ? 'Tesla está falando...' : 'Тесла говори...');
-    };
-    
-    utterance.onend = () => {
-        teslaImage.classList.remove('tesla-speaking');
-        updateStatus(currentLanguage === 'pt' ? 'Pronto para mais questões científicas' : 'Спреман за више научних питања');
-    };
-    
-    utterance.onerror = (event) => {
-        console.error('Erro na síntese de voz:', event.error);
-        teslaImage.classList.remove('tesla-speaking');
-        updateStatus(currentLanguage === 'pt' ? 'Erro na síntese de voz' : 'Грешка у синтези гласа');
-    };
-    
-    // Falar
-    window.speechSynthesis.speak(utterance);
+    // Aguardar um pouco para garantir que o cancelamento foi processado
+    setTimeout(() => {
+        // Criar utterance
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Configurar voz baseada no idioma atual
+        const langConfig = LANGUAGES[currentLanguage];
+        utterance.rate = 0.85;
+        utterance.pitch = 1.0;
+        utterance.volume = 0.9;
+        
+        // Aguardar vozes serem carregadas se necessário
+        const setupVoice = () => {
+            const voices = window.speechSynthesis.getVoices();
+            console.log('Vozes disponíveis:', voices.map(v => `${v.name} (${v.lang})`));
+            
+            let targetVoice = null;
+            
+            if (currentLanguage === 'pt') {
+                // Tentar encontrar vozes em português
+                targetVoice = voices.find(voice => 
+                    voice.lang.toLowerCase().includes('pt') && voice.name.toLowerCase().includes('male')
+                ) || voices.find(voice => 
+                    voice.lang.toLowerCase().includes('pt-br')
+                ) || voices.find(voice => 
+                    voice.lang.toLowerCase().includes('pt')
+                );
+                
+                utterance.lang = 'pt-BR';
+                console.log('Tentando usar voz em português:', targetVoice?.name);
+                
+            } else if (currentLanguage === 'sr') {
+                // Para sérvio, tentar múltiplas estratégias
+                targetVoice = 
+                    // 1. Sérvio direto
+                    voices.find(voice => voice.lang.toLowerCase().includes('sr')) ||
+                    // 2. Sérvio com variações
+                    voices.find(voice => voice.lang.toLowerCase().includes('sr-rs')) ||
+                    voices.find(voice => voice.lang.toLowerCase().includes('sr-latn')) ||
+                    voices.find(voice => voice.lang.toLowerCase().includes('sr-cyrl')) ||
+                    // 3. Idiomas eslavos próximos
+                    voices.find(voice => voice.lang.toLowerCase().includes('hr')) || // Croata
+                    voices.find(voice => voice.lang.toLowerCase().includes('bs')) || // Bósnio
+                    voices.find(voice => voice.lang.toLowerCase().includes('mk')) || // Macedônio
+                    voices.find(voice => voice.lang.toLowerCase().includes('bg')) || // Búlgaro
+                    voices.find(voice => voice.lang.toLowerCase().includes('sl')) || // Esloveno
+                    // 4. Russo como backup eslavo
+                    voices.find(voice => voice.lang.toLowerCase().includes('ru')) ||
+                    // 5. Fallback para inglês
+                    voices.find(voice => voice.lang.toLowerCase().includes('en'));
+                
+                // Configurar idioma
+                if (targetVoice) {
+                    if (targetVoice.lang.toLowerCase().includes('sr')) {
+                        utterance.lang = 'sr-RS';
+                    } else if (targetVoice.lang.toLowerCase().includes('hr')) {
+                        utterance.lang = 'hr-HR';
+                    } else if (targetVoice.lang.toLowerCase().includes('ru')) {
+                        utterance.lang = 'ru-RU';
+                    } else {
+                        utterance.lang = targetVoice.lang;
+                    }
+                } else {
+                    utterance.lang = 'sr-RS'; // Padrão sérvio
+                }
+                
+                console.log('Tentando usar voz para sérvio:', targetVoice?.name, '- Idioma configurado:', utterance.lang);
+            }
+            
+            if (targetVoice) {
+                utterance.voice = targetVoice;
+                console.log('Voz selecionada:', targetVoice.name, '(' + targetVoice.lang + ')');
+            } else {
+                console.warn('Nenhuma voz adequada encontrada para', currentLanguage);
+            }
+            
+            return targetVoice;
+        };
+        
+        // Configurar voz
+        setupVoice();
+        
+        // Callbacks
+        utterance.onstart = () => {
+            teslaImage.classList.add('tesla-speaking');
+            updateStatus(currentLanguage === 'pt' ? 'Tesla está falando...' : 'Тесла говори...');
+            console.log('Síntese de voz iniciada');
+        };
+        
+        utterance.onend = () => {
+            teslaImage.classList.remove('tesla-speaking');
+            updateStatus(currentLanguage === 'pt' ? 'Pronto para mais questões científicas' : 'Спреман за више научних питања');
+            console.log('Síntese de voz finalizada');
+        };
+        
+        utterance.onerror = (event) => {
+            console.error('Erro na síntese de voz:', event.error, event);
+            teslaImage.classList.remove('tesla-speaking');
+            updateStatus(currentLanguage === 'pt' ? 'Erro na síntese de voz' : 'Грешка у синтези гласа');
+            
+            // Tentar novamente com uma voz diferente se disponível
+            if (event.error === 'voice-unavailable' || event.error === 'language-unavailable') {
+                console.log('Tentando com voz padrão do sistema...');
+                const fallbackUtterance = new SpeechSynthesisUtterance(text);
+                fallbackUtterance.rate = 0.85;
+                fallbackUtterance.pitch = 1.0;
+                fallbackUtterance.volume = 0.9;
+                // Não definir voz específica, usar padrão do sistema
+                window.speechSynthesis.speak(fallbackUtterance);
+            }
+        };
+        
+        // Falar
+        console.log('Iniciando síntese de voz...');
+        window.speechSynthesis.speak(utterance);
+        
+    }, 100); // Pequeno delay para garantir que o cancel foi processado
 }
 
 function toggleLanguage() {
