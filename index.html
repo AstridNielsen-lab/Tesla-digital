@@ -7,7 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <!-- Splashscreen -->
+    <div class="splashscreen" id="splashscreen">
+        <div class="splash-content">
+            <div class="tesla-logo">
+                <div class="logo-circle">
+                    <span class="logo-text">T</span>
+                    <div class="electric-ring"></div>
+                    <div class="electric-ring electric-ring-2"></div>
+                </div>
+            </div>
+            <h1 class="splash-title">Tesla Digital</h1>
+            <p class="splash-subtitle">Разговор са највећим проналазачем историје</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">Учитавање...</p>
+        </div>
+    </div>
+
+    <div class="container" id="main-content">
         <header class="header">
             <div class="tesla-avatar">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/79/Tesla_circa_1890.jpeg" alt="Nikola Tesla" id="tesla-image">
@@ -63,6 +82,35 @@
         <div class="lightning-bolt">⚡</div>
         <p>Тесла мисли...</p>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Tesla Digital</h3>
+                <p>Chat interativo com a persona autêntica de Nikola Tesla</p>
+            </div>
+            <div class="footer-section">
+                <h3>Desenvolvido por</h3>
+                <p><strong>Julio Campos Machado</strong></p>
+                <p>Like Look Solutions</p>
+                <div class="contact-info">
+                    <p>📱 WhatsApp: <a href="https://wa.me/5511970603441" target="_blank">+55 11 97060-3441</a></p>
+                    <p>🌐 Site: <a href="https://likelook.wixsite.com/solutions" target="_blank">likelook.wixsite.com/solutions</a></p>
+                    <p>📧 Email: juliocamposmachado@gmail.com</p>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Tecnologias</h3>
+                <p>Google Gemini AI • Web Speech API</p>
+                <p>HTML5 • CSS3 • JavaScript ES6+</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Like Look Solutions - CNPJ: 36.992.198/0001-84</p>
+            <p>Desenvolvido com ⚡ por Julio Campos Machado</p>
+        </div>
+    </footer>
 
     <script src="app.js"></script>
 </body>

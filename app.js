@@ -116,8 +116,32 @@ Responda sempre em PORTUGUÊS BRASILEIRO mantendo essa persona consistente.
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+    showSplashScreen();
 });
+
+// Função para controlar a splashscreen
+function showSplashScreen() {
+    const splashscreen = document.getElementById('splashscreen');
+    const mainContent = document.getElementById('main-content');
+    
+    // Inicialmente esconder o conteúdo principal
+    mainContent.style.display = 'none';
+    
+    // Após 3 segundos, esconder splashscreen e mostrar conteúdo
+    setTimeout(() => {
+        splashscreen.classList.add('hidden');
+        
+        // Aguardar animação de fade out da splashscreen
+        setTimeout(() => {
+            splashscreen.style.display = 'none';
+            mainContent.style.display = 'flex';
+            mainContent.classList.add('show');
+            
+            // Inicializar a aplicação após mostrar o conteúdo
+            initializeApp();
+        }, 500);
+    }, 3000);
+}
 
 function initializeApp() {
     // Event listeners
